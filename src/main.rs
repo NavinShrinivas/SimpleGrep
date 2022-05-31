@@ -1,11 +1,17 @@
 use std::env;
+use std::fs;
+
+
+
 mod modules;
 
 
 struct Args{
     option : Vec<String>,
     file : String,
-    pattern : String
+    pattern : String,
+    file_content : String,
+    file_content_ci : String
 }
 
 
@@ -15,6 +21,8 @@ impl Args{
         let mut option : Vec<String> = Vec::new();
         let mut file : String = String::new();
         let mut pattern : String = String::new();
+        let mut file_content : String = String::new();
+        let file_content_ci : String = String::new();
         if args.len() >= 3 {
             for i  in 1..args.len()-2{
                 if &args[i] == "--help"{
@@ -26,7 +34,9 @@ impl Args{
 
             }
             file = String::from(args[args.len()-1].clone());
+            file_content = fs::read_to_string(&file).expect("Something went wrong readin file, possibly non existant file?");
             pattern = String::from(args[args.len()-2].clone());
+
         }else{
             if args.len() > 1 &&  ( args[1] == "--help" || args[1] == "-h" ){
                 option.push(String::from("-h"));
@@ -37,7 +47,7 @@ impl Args{
                 //Intentionally add unrecoginsable options to give correct error messages.
             }
         }
-        Args { option, file, pattern}
+        Args { option, file, pattern , file_content , file_content_ci}
     }
 }
 
@@ -54,12 +64,15 @@ fn main() {
             modules::modules::print_help();
         }
         1 => {
+            //Normal strcict search
 
         }
         2 => {
+            //non-strict searching 
 
         }
         3 => {
+            //Do nothing as invalid options detected
 
         }
         _ => {
@@ -95,12 +108,14 @@ fn options_parser()->i32{
     }
     if args_struct.option.contains(&String::from("-ci")){
         detected_options+=1;
+        args_struct.file_content_ci = args_struct.file_content.to_lowercase().clone();
         args_struct.pattern = args_struct.pattern.to_lowercase().to_string();
     }
     if args_struct.option.contains(&String::from("-h")){
         detected_options+=1;
         ret = 0;
     }
+    println!("{}",args_struct.file_content);
 
 
     if detected_options < args_struct.option.len()
