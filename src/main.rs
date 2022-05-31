@@ -17,7 +17,13 @@ impl Args{
         let mut pattern : String = String::new();
         if args.len() >= 3 {
             for i  in 1..args.len()-2{
-                option.push(args[i].clone());
+                if &args[i] == "--help"{
+                    option.push(String::from("-h"));
+                }else
+                {
+                    option.push(args[i].clone());
+                }
+
             }
             file = String::from(args[args.len()-1].clone());
             pattern = String::from(args[args.len()-2].clone());
