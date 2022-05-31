@@ -22,11 +22,13 @@ impl Args{
             file = String::from(args[args.len()-1].clone());
             pattern = String::from(args[args.len()-2].clone());
         }else{
-            if args[1] == "--help" || args[1] == "-h"{
-                option.push( args[1].clone());
+            if args.len() > 1 &&  ( args[1] == "--help" || args[1] == "-h" ){
+                option.push(String::from("-h"));
             }else
             {
-                println!("Not enough option, please use --help to see usage of this tool!");
+                println!("Not enough option/fields, please use --help to see usage of this tool!");
+                option.push(String::from("-invalid")); 
+                //Intentionally add unrecoginsable options to give correct error messages.
             }
         }
         Args { option, file, pattern}
@@ -45,6 +47,15 @@ fn main() {
         0 => {
             modules::modules::print_help();
         }
+        1 => {
+
+        }
+        2 => {
+
+        }
+        3 => {
+
+        }
         _ => {
             panic!("Something went wrong on our side.");
         }
@@ -55,12 +66,16 @@ fn main() {
 fn options_parser()->i32{
     let args : Vec<String> = env::args().collect();
     let mut args_struct = Args::new(&args);
-    println!("{:#?}",args_struct.option);
+    if args_struct.option.contains(&String::from("-invalid")){
+        return 3;
+    }else{
+        println!("Options detected : {:#?}",args_struct.option);
+    }
     let mut detected_options = 0;
 
     //options matching in decresing order. lower is higher priorty
     let mut ret = 1;
-   
+
     if args_struct.option.contains(&String::from("-s")){
         ret = 1;
         detected_options+=1;
