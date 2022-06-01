@@ -1,12 +1,10 @@
 use std::env;
 use std::fs;
 
-
-
 mod modules;
 
 
-struct Args{
+pub struct Args{
     option : Vec<String>,
     file : String,
     pattern : String,
@@ -54,8 +52,8 @@ impl Args{
 
 fn main() {
     println!("Note : This program can only parse relative paths");
-
-    match options_parser(){
+    let ( op,args_struct  )= options_parser();
+    match op{
         -1 => {
             println!("Invalid options detected!");
             println!("use option --help to see all valid/possible options.");
@@ -65,7 +63,7 @@ fn main() {
         }
         1 => {
             //Normal strcict search
-
+            modules::stringmatch::strict_match(args_struct);
         }
         2 => {
             //non-strict searching 
@@ -82,11 +80,11 @@ fn main() {
     }
 }
 
-fn options_parser()->i32{
+fn options_parser()->(i32,Args){
     let args : Vec<String> = env::args().collect();
     let mut args_struct = Args::new(&args);
     if args_struct.option.contains(&String::from("-invalid")){
-        return 3;
+        return (3,args_struct);
     }else{
         println!("Options detected : {:#?}",args_struct.option);
     }
@@ -115,13 +113,12 @@ fn options_parser()->i32{
         detected_options+=1;
         ret = 0;
     }
-    println!("{}",args_struct.file_content);
 
 
     if detected_options < args_struct.option.len()
     {
         ret = -1;
     }
-    return ret;
+    return (ret,args_struct);
 
 }
