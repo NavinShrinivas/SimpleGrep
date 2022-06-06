@@ -42,6 +42,7 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
 
         //Below two is done as strings are not indexable by default in rust
         let file_arr : Vec<char>;
+        let raw_file_arr : Vec<char> = args_struct.file_content.chars().collect();
         if args_struct.file_content_ci.len()!=0{
             file_arr = args_struct.file_content_ci.chars().collect();
         }else{
@@ -62,7 +63,7 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
                 print_file_line(
                     right_start_index - matched_chars,
                     right_start_index,
-                    &file_arr,
+                    &raw_file_arr,
                 );
                 right_start_index += pat_len;
             } else {
