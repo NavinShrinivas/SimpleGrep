@@ -15,7 +15,7 @@ pub fn print_logo() {
 
 pub fn print_help() {
     print_logo();
-    yellow_ln!("\t General usage : executable -option1 -option2 -option3 patter_word filename");
+    yellow_ln!("\tGeneral usage : executable -option1 -option2 -option3 patter_word filename");
     red_ln!(
         "NOTE : IF CONFLICTING OPTIONS EXISTS, ONES THAT APPEAR FIRST IN THIS HELP ARE EXECUTED."
     );
