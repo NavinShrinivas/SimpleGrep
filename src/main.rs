@@ -8,7 +8,6 @@ mod modules;
 
 pub struct Args {
     option: Vec<String>,
-    file: String,
     pattern: String,
     file_content: String,
     file_content_ci: String,
@@ -17,7 +16,7 @@ pub struct Args {
 impl Args {
     fn new(args: &Vec<String>) -> Args {
         let mut option: Vec<String> = Vec::new();
-        let mut file: String = String::new();
+        let file: String;
         let mut pattern: String = String::new();
         let mut file_content: String = String::new();
         let file_content_ci: String = String::new();
@@ -44,7 +43,6 @@ impl Args {
         }
         Args {
             option,
-            file,
             pattern,
             file_content,
             file_content_ci,

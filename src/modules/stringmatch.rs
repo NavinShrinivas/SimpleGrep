@@ -43,15 +43,19 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
         //Below two is done as strings are not indexable by default in rust
         let file_arr : Vec<char>;
         let raw_file_arr : Vec<char> = args_struct.file_content.chars().collect();
-        if args_struct.file_content_ci.len()!=0{
+        if args_struct.file_content_ci.len()!=0{ //Will not be 0 only if ignore case option was passed.
             file_arr = args_struct.file_content_ci.chars().collect();
-        }else{
+        }else{ //Default, original file
             file_arr  = args_struct.file_content.chars().collect();
         }
-        let pat_arr: Vec<char> = args_struct.pattern.chars().collect();
+
+        let pat_arr: Vec<char> = args_struct.pattern.chars().collect(); //Automatically made lower case on ignore case option
+                                                                        //Kept a seperate one for
+                                                                        //file as we need to print
+                                                                        //original final later to
+                                                                        //show matches
 
         while right_start_index <= file_len {
-            //println!("Here {}", right_start_index);
             matched_chars = 0;
             while matched_chars != pat_len
                 && file_arr[right_start_index - matched_chars - 1]
@@ -78,6 +82,7 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
             }
         }
     } else {
+        //Non strict, nearest matching
         return;
     }
 }
