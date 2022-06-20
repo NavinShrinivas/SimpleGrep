@@ -3,6 +3,8 @@
 
 ## About speed
 
+> WOOOOOOOOOOT!! After building a release build with compiler optimisations SimpleGrep was just ~0.02 seconds slower.
+
 A very simple and modified implementation of GREP in rust. Sadly SimpleGrep is not as fast as grep, why so? 
 - GNU grep has the ability to skip kernel buffers to read text files directly, this alone take 0.3 second of 0.6 (in below screen shots).
 - It implements a superior boyer-moores algorithm 
