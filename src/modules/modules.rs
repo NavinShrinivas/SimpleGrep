@@ -1,3 +1,6 @@
+use colored::Colorize;
+
+
 pub fn print_logo() {
     //prints logo as a raw string, did not want to bloat package size by using ascii printer.
 
@@ -10,16 +13,16 @@ pub fn print_logo() {
 |____/|_|_| |_| |_| .__/|_|\___|\____|_|  \___| .__/
                   |_|                         |_|",
     );
-    blue_ln!("{}", logo);
+    println!("{}", logo.blue());
 }
 
 pub fn print_help() {
     print_logo();
-    yellow_ln!("\tGeneral usage : executable -option1 -option2 -option3 patter_word filename");
-    red_ln!(
-        "NOTE : IF CONFLICTING OPTIONS EXISTS, ONES THAT APPEAR FIRST IN THIS HELP ARE EXECUTED."
+    println!("{}","\tGeneral usage : executable -option1 -option2 -option3 patter_word filename".yellow());
+    println!("{}",
+        "NOTE : IF CONFLICTING OPTIONS EXISTS, ONES THAT APPEAR FIRST IN THIS HELP ARE EXECUTED.".red()
     );
-    red_ln!("Note : Simple grep cannot support regex, it is merely a string matching algorithm");
+    println!("{}","Note : Simple grep cannot support regex, it is merely a string matching algorithm".red());
     println!();
     println!();
     println!("Valid Options : ");
@@ -32,7 +35,7 @@ pub fn print_help() {
     println!(" '-r' : recurse search, searches all files in a given folder (only one layer)");
 }
 
-pub fn print_file_line(start: usize, end: usize, file_arr: &Vec<char>) {
+pub fn print_file_line(start: usize, end: usize, file_arr: &Vec<char>, overall_string : &mut String){
     let mut line_start = start;
     let mut line_end = end;
     while line_start != 0 && file_arr[line_start] != '\n' {
@@ -42,13 +45,15 @@ pub fn print_file_line(start: usize, end: usize, file_arr: &Vec<char>) {
         line_end += 1;
     }
 
+    let mut temp_string : String = String::new();
     for i in line_start + 1..line_end{
         //-1 to ignore the ending new line, +1 to ignore starting newline
         if i >= start && i < end {
-            blue!("{}", file_arr[i]);
+             temp_string = format!("{}{}",temp_string,file_arr[i].to_string().blue());
         } else {
-            white!("{}", file_arr[i]);
+            temp_string = format!("{}{}",temp_string,file_arr[i]);
         }
     }
-    println!();
+    temp_string = format!("{}{}",temp_string,"\n");
+    overall_string.push_str(&temp_string);
 }

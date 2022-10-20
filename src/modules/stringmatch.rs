@@ -54,6 +54,7 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
                                                                         //file as we need to print
                                                                         //original final later to
                                                                         //show matches
+        let mut res_string : String = String::new();
 
         while right_start_index <= file_len {
             matched_chars = 0;
@@ -68,6 +69,7 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
                     right_start_index - matched_chars,
                     right_start_index,
                     &raw_file_arr,
+                    &mut res_string
                 );
                 right_start_index += pat_len;
             } else {
@@ -81,6 +83,7 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
                 }
             }
         }
+        println!("{}", res_string);
     } else {
         //Non strict, nearest matching
         return;

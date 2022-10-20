@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate colour;
-
 use std::env;
 use std::fs;
 
