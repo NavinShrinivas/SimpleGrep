@@ -1,6 +1,26 @@
 # SimpleGrep 
 
 
+## About prpject 
+
+This project aims to be grep, simply written in rust. It's main aim is to be as fast as or faster than Grep.
+
+## Building project 
+
+You have to have the cargo toolchain preisntalled for building this project.
+```bash
+$ cargo build
+$ time ./target/debug/simple_grep Gutenberg ./large_text.txt
+```
+> Note : without the release build, speeds are not great, hence this is they way to test your optimisations L 
+```bash
+$ cargo build --release
+$ time ./target/release/simple_grep Gutenberg ./large_text.txt
+```
+## Maintainer 
+[Navin Shrinivas](https://github.com/NavinShrinivas)
+
+
 ## About speed
 
 > WOOOOOOOOOOT!! After building a release build with compiler optimisations SimpleGrep was just ~0.02 seconds slower.
