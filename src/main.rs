@@ -21,7 +21,9 @@ impl Args {
             for i in 1..args.len() - 2 {
                 if &args[i] == "--help" {
                     option.push(String::from("-h"));
-                } else {
+                } else if &args[i] == "--future" {
+                    option.push(String::from("-h"));
+                }else {
                     option.push(args[i].clone());
                 }
             }
@@ -32,6 +34,8 @@ impl Args {
         } else {
             if args.len() > 1 && (args[1] == "--help" || args[1] == "-h") {
                 option.push(String::from("-h"));
+            } else if args.len() > 1 && (args[1] == "--future" || args[1] == "-f"){
+                option.push(String::from("-f"));
             } else {
                 println!("Not enough option/fields, please use --help to see usage of this tool!");
                 option.push(String::from("-invalid"));
@@ -54,6 +58,7 @@ fn main() {
         -1 => {
             println!("Invalid options detected!");
             println!("use option --help to see all valid/possible options.");
+            println!("use option --future to see all options that will be added in the future."); 
         }
         0 => {
             modules::modules::print_help();
@@ -67,6 +72,9 @@ fn main() {
         }
         3 => {
             //Do nothing as invalid options detected
+        }
+        4 => {
+            modules::modules::print_future(); // future flags 
         }
         _ => {
             panic!("Something went wrong on our side.");
@@ -106,6 +114,10 @@ fn options_parser() -> (i32, Args) {
     if args_struct.option.contains(&String::from("-h")) {
         detected_options += 1;
         ret = 0;
+    }
+    if args_struct.option.contains(&String::from("-f")) {
+        detected_options += 1;
+        ret = 4;
     }
 
     if detected_options < args_struct.option.len() {
