@@ -27,10 +27,23 @@ pub fn print_help() {
     println!();
     println!("Valid Options : ");
     println!(" '-h' : To obtain this pretty nice helper :)");
+    println!(" '-f' : To obtain commands/flags that will be added in the future");
     println!(" '-ci' : case insensitive search ");
     println!(" '-c' : case sensitive search (default)");
     println!(" '-s' : strict search");
     println!("\t description : Only return match if exact match is found");
+    println!(" '-ns' : non-strict search, return closest matches (default)");
+}
+pub fn print_future() {
+    print_logo();
+    println!("{}","\tGeneral usage : executable -option1 -option2 -option3 patter_word filename".yellow());
+    println!("{}",
+        "NOTE : IF CONFLICTING OPTIONS EXISTS, ONES THAT APPEAR FIRST IN THIS HELP ARE EXECUTED.".red()
+    );
+    println!("{}","Note : Simple grep cannot support regex, it is merely a string matching algorithm".red());
+    println!();
+    println!();
+    println!("Future Options : ");
     println!(" '-ns' : non-strict search, return closest matches (default)");
     println!(" '-r' : recurse search, searches all files in a given folder (only one layer)");
 }
