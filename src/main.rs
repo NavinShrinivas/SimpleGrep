@@ -1,6 +1,9 @@
 use std::env;
 use std::fs;
 
+extern crate walkdir;
+use walkdir::WalkDir;
+
 mod modules;
 
 pub struct Args {
@@ -22,12 +25,13 @@ impl Args {
                 if &args[i] == "--help" {
                     option.push(String::from("-h"));
                 } else if &args[i] == "--future" {
-                    option.push(String::from("-h"));
+                    option.push(String::from("-f"));
                 }else {
                     option.push(args[i].clone());
                 }
             }
             file = String::from(args[args.len() - 1].clone());
+            recurse_options_parser(&file, args.len().try_into().unwrap(), &mut file_content);
             file_content = fs::read_to_string(&file)
                 .expect("Something went wrong readin file, possibly non existant file?");
             pattern = String::from(args[args.len() - 2].clone());
@@ -78,6 +82,19 @@ fn main() {
         }
         _ => {
             panic!("Something went wrong on our side.");
+        }
+    }
+}
+
+fn recurse_options_parser(myfile: &String, n_args:i32, file_content: &mut String){
+    for file in WalkDir::new(myfile).into_iter().filter_map(|file| file.ok()) {
+        if file.metadata().unwrap().is_file() {
+            println!("{}", file.path().display());
+            if n_args >= 3 {
+                let content = fs::read_to_string(&file.path())
+                .expect("Something went wrong readin file, possibly non existant file?");
+                file_content.push_str(&content);
+            }
         }
     }
 }
