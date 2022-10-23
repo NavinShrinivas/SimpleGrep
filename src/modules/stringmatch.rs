@@ -1,4 +1,4 @@
-use super::modules::print_file_line;
+use super::output::print_file_line;
 use crate::Args;
 use std::collections::HashMap;
 
@@ -12,11 +12,11 @@ impl Table {
             shift_table: HashMap::new(),
         }
     }
-    fn preprocess_pattern(self: &mut Self, pattern: &String) {
+    fn preprocess_pattern(&mut self, pattern: &String) {
         for (i, item) in pattern.chars().enumerate() {
             if i != pattern.len() - 1 {
                 let value_ref = (*self).shift_table.entry(item).or_insert(0);
-                *value_ref = usize::try_from(pattern.len() - 1 - i).unwrap();
+                *value_ref = pattern.len() - 1 - i;
             }
         }
     }
@@ -41,20 +41,22 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
         let mut right_start_index: usize = pat_len;
 
         //Below two is done as strings are not indexable by default in rust
-        let file_arr : Vec<char>;
-        let raw_file_arr : Vec<char> = args_struct.file_content.chars().collect();
-        if args_struct.file_content_ci.len()!=0{ //Will not be 0 only if ignore case option was passed.
-            file_arr = args_struct.file_content_ci.chars().collect();
-        }else{ //Default, original file
-            file_arr  = args_struct.file_content.chars().collect();
-        }
+        let raw_file_arr: Vec<char> = args_struct.file_content.chars().collect();
+
+        let file_arr: Vec<char> = if !args_struct.file_content_ci.is_empty() {
+            //Will not be 0 only if ignore case option was passed.
+            args_struct.file_content_ci.chars().collect()
+        } else {
+            //Default, original file
+            args_struct.file_content.chars().collect()
+        };
 
         let pat_arr: Vec<char> = args_struct.pattern.chars().collect(); //Automatically made lower case on ignore case option
                                                                         //Kept a seperate one for
                                                                         //file as we need to print
                                                                         //original final later to
                                                                         //show matches
-        let mut res_string : String = String::new();
+        let mut res_string: String = String::new();
 
         while right_start_index <= file_len {
             matched_chars = 0;
@@ -69,7 +71,7 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
                     right_start_index - matched_chars,
                     right_start_index,
                     &raw_file_arr,
-                    &mut res_string
+                    &mut res_string,
                 );
                 right_start_index += pat_len;
             } else {
@@ -84,8 +86,5 @@ fn horspool_algorithm(args_struct: &Args, table: &mut Table, strict: bool) {
             }
         }
         println!("{}", res_string);
-    } else {
-        //Non strict, nearest matching
-        return;
     }
 }

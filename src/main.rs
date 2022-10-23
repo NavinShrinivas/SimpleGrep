@@ -21,30 +21,28 @@ impl Args {
         let mut file_content: String = String::new();
         let file_content_ci: String = String::new();
         if args.len() >= 3 {
-            for i in 1..args.len() - 2 {
-                if &args[i] == "--help" {
+            for arg in args.iter().take(args.len() - 2).skip(1) {
+                if arg == "--help" {
                     option.push(String::from("-h"));
-                } else if &args[i] == "--future" {
+                } else if arg == "--future" {
                     option.push(String::from("-f"));
-                }else {
-                    option.push(args[i].clone());
+                } else {
+                    option.push(arg.clone());
                 }
             }
-            file = String::from(args[args.len() - 1].clone());
+            file = args[args.len() - 1].clone();
             recurse_options_parser(&file, args.len().try_into().unwrap(), &mut file_content);
             file_content = fs::read_to_string(&file)
                 .expect("Something went wrong readin file, possibly non existant file?");
-            pattern = String::from(args[args.len() - 2].clone());
+            pattern = args[args.len() - 2].clone();
+        } else if args.len() > 1 && (args[1] == "--help" || args[1] == "-h") {
+            option.push(String::from("-h"));
+        } else if args.len() > 1 && (args[1] == "--future" || args[1] == "-f") {
+            option.push(String::from("-f"));
         } else {
-            if args.len() > 1 && (args[1] == "--help" || args[1] == "-h") {
-                option.push(String::from("-h"));
-            } else if args.len() > 1 && (args[1] == "--future" || args[1] == "-f"){
-                option.push(String::from("-f"));
-            } else {
-                println!("Not enough option/fields, please use --help to see usage of this tool!");
-                option.push(String::from("-invalid"));
-                //Intentionally add unrecoginsable options to give correct error messages.
-            }
+            println!("Not enough option/fields, please use --help to see usage of this tool!");
+            option.push(String::from("-invalid"));
+            //Intentionally add unrecoginsable options to give correct error messages.
         }
         Args {
             option,
@@ -62,10 +60,10 @@ fn main() {
         -1 => {
             println!("Invalid options detected!");
             println!("use option --help to see all valid/possible options.");
-            println!("use option --future to see all options that will be added in the future."); 
+            println!("use option --future to see all options that will be added in the future.");
         }
         0 => {
-            modules::modules::print_help();
+            modules::output::print_help();
         }
         1 => {
             //Normal strcict search
@@ -78,7 +76,7 @@ fn main() {
             //Do nothing as invalid options detected
         }
         4 => {
-            modules::modules::print_future(); // future flags 
+            modules::output::print_future(); // future flags
         }
         _ => {
             panic!("Something went wrong on our side.");
@@ -86,13 +84,16 @@ fn main() {
     }
 }
 
-fn recurse_options_parser(myfile: &String, n_args:i32, file_content: &mut String){
-    for file in WalkDir::new(myfile).into_iter().filter_map(|file| file.ok()) {
+fn recurse_options_parser(myfile: &String, n_args: i32, file_content: &mut String) {
+    for file in WalkDir::new(myfile)
+        .into_iter()
+        .filter_map(|file| file.ok())
+    {
         if file.metadata().unwrap().is_file() {
             println!("{}", file.path().display());
             if n_args >= 3 {
                 let content = fs::read_to_string(&file.path())
-                .expect("Something went wrong readin file, possibly non existant file?");
+                    .expect("Something went wrong readin file, possibly non existant file?");
                 file_content.push_str(&content);
             }
         }
@@ -125,8 +126,8 @@ fn options_parser() -> (i32, Args) {
     }
     if args_struct.option.contains(&String::from("-ci")) {
         detected_options += 1;
-        args_struct.file_content_ci = args_struct.file_content.to_lowercase().clone();
-        args_struct.pattern = args_struct.pattern.to_lowercase().to_string();
+        args_struct.file_content_ci = args_struct.file_content.to_lowercase();
+        args_struct.pattern = args_struct.pattern.to_lowercase();
     }
     if args_struct.option.contains(&String::from("-h")) {
         detected_options += 1;
@@ -140,5 +141,5 @@ fn options_parser() -> (i32, Args) {
     if detected_options < args_struct.option.len() {
         ret = -1;
     }
-    return (ret, args_struct);
+    (ret, args_struct)
 }
